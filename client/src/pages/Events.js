@@ -10,59 +10,51 @@ import {
 } from "../Store/fearures/event-slice";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import "react-toastify/dist/ReactToastify.css";
 
 const Events = () => {
-
   let dispatch = useDispatch();
 
-  const events = useSelector((state) =>  (state.event.events));
-  console.log("events",events)
+  const events = useSelector((state) => state.event.events);
+  console.log("events", events);
 
   useEffect(() => {
     dispatch(getEvents());
-  },[dispatch]);
-
+  }, [dispatch]);
 
   const joinEvent = (eventId) => {
     dispatch(joinToEvent(eventId));
     dispatch(getEvents());
-
   };
 
   const updateEvent = (id) => {
     const name = prompt("enter value");
     dispatch(updateToEvent({ name, id }));
     dispatch(getEvents());
-
   };
 
   const Delete = (deleteID) => {
     dispatch(deleteEvent(deleteID));
     dispatch(getEvents());
-
   };
 
-  const addComment = (value, id) => {
-    dispatch(addToComment({ value, id}));
-    dispatch(getEvents());
+  const addComment = async (value, id) => {
+    await dispatch(addToComment({ value, id }));
+    await dispatch(getEvents());
+    // addToComment and getEvents are api calls and unless you add await to it the getEvents will get called while addToComment api is in progress
     toast.success("successfully");
-
   };
 
   const deleteComment = (value, commentPostedBy, eventId) => {
     dispatch(deleteToComment({ value, commentPostedBy, eventId }));
     dispatch(getEvents());
     toast.success("successfully");
-
   };
   let id = JSON.parse(localStorage.getItem("user"))?.details;
 
   let isEqual = (first, second) =>
     JSON.stringify(first) === JSON.stringify(second);
- 
+
   return (
     <div>
       {events?.map((item, index) => {
